@@ -14,10 +14,8 @@ RM := rm -rf
 -include Middlewares/ST/STM32_USB_Host_Library/Core/Src/subdir.mk
 -include Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Src/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
-<<<<<<< Updated upstream
-=======
 -include Drivers/SC16IS740/src/subdir.mk
->>>>>>> Stashed changes
+-include Drivers/SC16IS740/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -68,8 +66,8 @@ all: main-build
 main-build: SC16IS740_drivers.elf secondary-outputs
 
 # Tool invocations
-SC16IS740_drivers.elf SC16IS740_drivers.map: $(OBJS) $(USER_OBJS) D:\Documents\STM32CubeIDE-workspace\SC16IS740_drivers\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SC16IS740_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Documents\STM32CubeIDE-workspace\SC16IS740_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SC16IS740_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SC16IS740_drivers.elf SC16IS740_drivers.map: $(OBJS) $(USER_OBJS) D:\Documents\SC16IS740-STM32-Driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SC16IS740_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Documents\SC16IS740-STM32-Driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SC16IS740_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
