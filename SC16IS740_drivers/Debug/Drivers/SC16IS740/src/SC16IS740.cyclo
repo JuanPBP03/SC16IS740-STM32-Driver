@@ -1,5 +1,6 @@
 ../Drivers/SC16IS740/src/SC16IS740.c:29:6:IS740_init	1
-../Drivers/SC16IS740/src/SC16IS740.c:62:6:IS740_transmitByte	1
-../Drivers/SC16IS740/src/SC16IS740.c:76:9:IS740_receiveByte	1
-../Drivers/SC16IS740/src/SC16IS740.c:105:9:IS740_readReg	1
-../Drivers/SC16IS740/src/SC16IS740.c:110:13:IS740_registercallbacks	1
+../Drivers/SC16IS740/src/SC16IS740.c:63:6:IS740_transmitByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:77:9:IS740_receiveByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:93:13:IS740_writeReg	1
+../Drivers/SC16IS740/src/SC16IS740.c:106:16:IS740_readReg	1
+../Drivers/SC16IS740/src/SC16IS740.c:111:13:IS740_registercallbacks	1

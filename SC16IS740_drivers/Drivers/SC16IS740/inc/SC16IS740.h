@@ -66,7 +66,7 @@ void IS740_transmitByte(uint8_t txByte);
 
 uint8_t IS740_receiveByte(void);
 
-inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal);
-inline uint8_t IS740_readReg(uint8_t regAddr);
+extern inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal);
+extern inline uint8_t IS740_readReg(uint8_t regAddr);
 
 #endif /* SC16IS740_SC16IS740_H_ */

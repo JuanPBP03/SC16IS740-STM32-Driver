@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "SC16IS740.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +51,8 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void byteSendToBridge(uint8_t addr, uint8_t val);
+uint8_t byteReadFromBridge(uint8_t addr);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -66,9 +68,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	SC16IS740handle_t *bridge;
-	SC16IS740cfg_t bridge_config;
-	bridge_config.
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -90,7 +90,23 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C1_Init();
+
   /* USER CODE BEGIN 2 */
+	SC16IS740handle_t bridge;
+	bridge.readByte = byteReadFromBridge;
+	bridge.writeByte = byteSendToBridge;
+	bridge.state = 0;
+	bridge.addr = 0;
+
+	SC16IS740cfg_t bridge_config = {0};
+	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
+	uint32_t clkdiv = (pclk1 / (9600*16));
+	bridge_config.divLow = (uint8_t)clkdiv;
+	bridge_config.divHigh = (uint8_t)(clkdiv>>4);
+
+	bridge.config = bridge_config;
+
+
 
   /* USER CODE END 2 */
 
@@ -98,6 +114,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -147,7 +165,15 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void byteSendToBridge(uint8_t addr, uint8_t val){
+	HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, &val, 1, 1000);
+}
+uint8_t byteReadFromBridge(uint8_t addr){
 
+	uint8_t *data = 0;
+	HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, data, 1, 1000);
+	return *data;
+}
 /* USER CODE END 4 */
 
 /**

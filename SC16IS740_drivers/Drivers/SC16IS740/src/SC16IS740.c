@@ -103,7 +103,7 @@ inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal){
 * @param
  * @retval None
  */
-uint8_t IS740_readReg(uint8_t regAddr){
+inline uint8_t IS740_readReg(uint8_t regAddr){
 
 	return IS740_readByte(regAddr);
 }
