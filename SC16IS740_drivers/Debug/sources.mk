@@ -24,6 +24,10 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
+<<<<<<< Updated upstream
+=======
+Drivers/SC16IS740/src \
+>>>>>>> Stashed changes
 Drivers/STM32F4xx_HAL_Driver/Src \
 Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Src \
 Middlewares/ST/STM32_USB_Host_Library/Core/Src \

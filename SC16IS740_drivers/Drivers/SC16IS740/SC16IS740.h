@@ -8,16 +8,42 @@
 #ifndef SC16IS740_SC16IS740_H_
 #define SC16IS740_SC16IS740_H_
 
+#include <stdint.h>
+#include "SC16IS740_defines.h"
+
+
+/*
+ * 	Helper macros
+ */
+
+
+#define IS740_PARITY_NONE				(0U<<SC16IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_ODD				(1U<<SC16IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_EVEN				(3U<<SC16IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_FORCE1				(5U<<SC16IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_FORCE0				(7U<<SC16IS740_LCR_PARITYEN_POS)
+
+#define IS740_STOPLEN_1					(0U<<SC16IS740_LCR_STOP_POS)
+#define IS740_STOPLEN_1HALF				(1U<<SC16IS740_LCR_STOP_POS)
+#define IS740_STOPLEN_2					(1U<<SC16IS740_LCR_STOP_POS)
+
+#define IS740_WORDLEN_5					(0U<<SC16IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_6					(1U<<SC16IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_7					(2U<<SC16IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_8					(3U<<SC16IS740_LCR_WORDLEN_POS)
+
+
+
 
 /*
  * 	Handle/Context and Config Structs
  */
 
 
-
 typedef struct
 {
-	uint16_t baudRate;
+	uint8_t divLow;
+	uint8_t divHigh;
 	uint8_t parity;
 	uint8_t stopBits;
 	uint8_t wordLen;
@@ -36,11 +62,11 @@ typedef struct
 
 void IS740_init(SC16IS740handle_t *hIS740);
 
-void IS740_transmitByte(uint8_t addr, uint8_t txByte);
+void IS740_transmitByte(uint8_t txByte);
 
-uint8_t IS740_receiveByte(uint8_t addr);
+uint8_t IS740_receiveByte(void);
 
-void IS740_writeReg(uint8_t regAddr, uint8_t regVal);
-uint8_t IS740_readReg(uint8_t regAddr, uint8_t regVal);
+inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal);
+inline uint8_t IS740_readReg(uint8_t regAddr);
 
 #endif /* SC16IS740_SC16IS740_H_ */

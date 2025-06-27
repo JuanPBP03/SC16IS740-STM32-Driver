@@ -41,6 +41,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   0001814f  00000000  00000000  00047596  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
+<<<<<<< Updated upstream
  19 .debug_str    000cba6b  00000000  00000000  0005f6e5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  20 .comment      00000043  00000000  00000000  0012b150  2**0
@@ -48,6 +49,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
  21 .debug_frame  00004ac4  00000000  00000000  0012b194  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  22 .debug_line_str 00000064  00000000  00000000  0012fc58  2**0
+=======
+ 19 .debug_str    000cbaff  00000000  00000000  00062ba1  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 20 .comment      00000043  00000000  00000000  0012e6a0  2**0
+                  CONTENTS, READONLY
+ 21 .debug_frame  00004b04  00000000  00000000  0012e6e4  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 22 .debug_line_str 00000064  00000000  00000000  001331e8  2**0
+>>>>>>> Stashed changes
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1893,7 +1903,11 @@ LoopFillZerobss:
  8000cc2:	f007 feb7 	bl	8008a34 <__libc_init_array>
 /* Call the application's entry point.*/
   bl  main
+<<<<<<< Updated upstream
  8000cc6:	f7ff fc15 	bl	80004f4 <main>
+=======
+ 8000cc6:	f7ff fe39 	bl	800093c <main>
+>>>>>>> Stashed changes
   bx  lr    
  8000cca:	4770      	bx	lr
   ldr   sp, =_estack     /* set stack pointer */
@@ -1968,7 +1982,11 @@ HAL_StatusTypeDef HAL_Init(void)
 
   /* Init the low level hardware */
   HAL_MspInit();
+<<<<<<< Updated upstream
  8000d1c:	f7ff fe00 	bl	8000920 <HAL_MspInit>
+=======
+ 8000d1c:	f7ff ff10 	bl	8000b40 <HAL_MspInit>
+>>>>>>> Stashed changes
 
   /* Return function status */
   return HAL_OK;
@@ -8354,7 +8372,11 @@ HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef *hi2c)
     /* Init the low level hardware : GPIO, CLOCK, NVIC */
     HAL_I2C_MspInit(hi2c);
  8003632:	6878      	ldr	r0, [r7, #4]
+<<<<<<< Updated upstream
  8003634:	f7fd f99c 	bl	8000970 <HAL_I2C_MspInit>
+=======
+ 8003634:	f7fd f88a 	bl	800074c <HAL_I2C_MspInit>
+>>>>>>> Stashed changes
 #endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
   }
 
@@ -8731,7 +8753,11 @@ HAL_StatusTypeDef HAL_I2S_Init(I2S_HandleTypeDef *hi2s)
     /* Init the low level hardware : GPIO, CLOCK, CORTEX...etc */
     HAL_I2S_MspInit(hi2s);
  80038c0:	6878      	ldr	r0, [r7, #4]
+<<<<<<< Updated upstream
  80038c2:	f7fd f89d 	bl	8000a00 <HAL_I2S_MspInit>
+=======
+ 80038c2:	f7fc ffbb 	bl	800083c <HAL_I2S_MspInit>
+>>>>>>> Stashed changes
 #endif /* USE_HAL_I2S_REGISTER_CALLBACKS */
   }
 
@@ -12423,7 +12449,11 @@ HAL_StatusTypeDef HAL_SPI_Init(SPI_HandleTypeDef *hspi)
     /* Init the low level hardware : GPIO, CLOCK, NVIC... */
     HAL_SPI_MspInit(hspi);
  8004db2:	6878      	ldr	r0, [r7, #4]
+<<<<<<< Updated upstream
  8004db4:	f7fb fea4 	bl	8000b00 <HAL_SPI_MspInit>
+=======
+ 8004db4:	f7fb fe7c 	bl	8000ab0 <HAL_SPI_MspInit>
+>>>>>>> Stashed changes
 #endif /* USE_HAL_SPI_REGISTER_CALLBACKS */
   }
 
@@ -21810,7 +21840,11 @@ void MX_USB_HOST_Init(void)
  800827a:	d001      	beq.n	8008280 <MX_USB_HOST_Init+0x18>
   {
     Error_Handler();
+<<<<<<< Updated upstream
  800827c:	f7f8 fb4a 	bl	8000914 <Error_Handler>
+=======
+ 800827c:	f7f8 fbdc 	bl	8000a38 <Error_Handler>
+>>>>>>> Stashed changes
   }
   if (USBH_RegisterClass(&hUsbHostFS, USBH_CDC_CLASS) != USBH_OK)
  8008280:	490b      	ldr	r1, [pc, #44]	@ (80082b0 <MX_USB_HOST_Init+0x48>)
@@ -21821,7 +21855,11 @@ void MX_USB_HOST_Init(void)
  800828c:	d001      	beq.n	8008292 <MX_USB_HOST_Init+0x2a>
   {
     Error_Handler();
+<<<<<<< Updated upstream
  800828e:	f7f8 fb41 	bl	8000914 <Error_Handler>
+=======
+ 800828e:	f7f8 fbd3 	bl	8000a38 <Error_Handler>
+>>>>>>> Stashed changes
   }
   if (USBH_Start(&hUsbHostFS) != USBH_OK)
  8008292:	4806      	ldr	r0, [pc, #24]	@ (80082ac <MX_USB_HOST_Init+0x44>)
@@ -21831,7 +21869,11 @@ void MX_USB_HOST_Init(void)
  800829c:	d001      	beq.n	80082a2 <MX_USB_HOST_Init+0x3a>
   {
     Error_Handler();
+<<<<<<< Updated upstream
  800829e:	f7f8 fb39 	bl	8000914 <Error_Handler>
+=======
+ 800829e:	f7f8 fbcb 	bl	8000a38 <Error_Handler>
+>>>>>>> Stashed changes
   }
   /* USER CODE BEGIN USB_HOST_Init_PostTreatment */
 
@@ -22251,7 +22293,11 @@ USBH_StatusTypeDef USBH_LL_Init(USBH_HandleTypeDef *phost)
  80084e2:	d001      	beq.n	80084e8 <USBH_LL_Init+0x58>
   {
     Error_Handler( );
+<<<<<<< Updated upstream
  80084e4:	f7f8 fa16 	bl	8000914 <Error_Handler>
+=======
+ 80084e4:	f7f8 faa8 	bl	8000a38 <Error_Handler>
+>>>>>>> Stashed changes
   }
 
   USBH_LL_SetTimer(phost, HAL_HCD_GetCurrentFrame(&hhcd_USB_OTG_FS));
