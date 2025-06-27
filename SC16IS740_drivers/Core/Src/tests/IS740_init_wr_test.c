@@ -102,7 +102,7 @@ int main(void)
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
 	uint32_t clkdiv = (pclk1 / (9600*16));
 	bridge_config.divLow = (uint8_t)clkdiv;
-	bridge_config.divHigh = (uint8_t)(clkdiv>>8);
+	bridge_config.divHigh = (uint8_t)(clkdiv>>4);
 
 	bridge.config = bridge_config;
 	IS740_init(&bridge);
@@ -114,11 +114,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+	  uint8_t data;
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
 	  delay(200000);
 
-	  IS740_writeReg(SC16IS740_THR_ADDR, 0xAA);
+	  IS740_writeReg(SC16IS740_SPR_ADDR_REGSEL, 0xAA);
+
+	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
+	  delay(200000);
+	  data = IS740_readReg(SC16IS740_SPR_ADDR_REGSEL);
 
 
     /* USER CODE END WHILE */

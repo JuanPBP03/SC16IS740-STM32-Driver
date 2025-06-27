@@ -36,17 +36,19 @@ void IS740_init(SC16IS740handle_t *hIS740){
 	//	1. Configure clock divisor
 
 	// Configure line control register
-	hIS740->writeByte(SC16IS740_LCR_ADDR, tempreg);
-
+	hIS740->writeByte(SC16IS740_LCR_ADDR_REGSEL, tempreg);
+	hIS740->readByte(SC16IS740_LCR_ADDR_REGSEL);
 	// Set low byte
-	hIS740->writeByte(SC16IS740_DLL_ADDR, hIS740->config.divLow);
-
+	hIS740->writeByte(SC16IS740_DLL_ADDR_REGSEL, hIS740->config.divLow);
+	hIS740->readByte(SC16IS740_DLL_ADDR_REGSEL);
 	// Set high byte
-	hIS740->writeByte(SC16IS740_DLH_ADDR, hIS740->config.divHigh);
+	hIS740->writeByte(SC16IS740_DLH_ADDR_REGSEL, hIS740->config.divHigh);
+	hIS740->readByte(SC16IS740_DLH_ADDR_REGSEL);
 
 	// Disable divisor latch
 	tempreg ^= SC16IS740_LCR_DIVLATCHEN;
-	hIS740->writeByte(SC16IS740_LCR_ADDR, tempreg);
+	hIS740->writeByte(SC16IS740_LCR_ADDR_REGSEL, tempreg);
+	hIS740->readByte(SC16IS740_LCR_ADDR_REGSEL);
 
 }
 
