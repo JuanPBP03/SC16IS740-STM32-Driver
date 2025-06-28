@@ -11,11 +11,6 @@
 #include <stdint.h>
 #include "SC16IS740.h"
 
-static void IS740_registercallbacks(SC16IS740handle_t *hIS740);
-void (*IS740_writeByte)(uint8_t regAddr, uint8_t regVal);
-uint8_t (*IS740_readByte)(uint8_t regAddr);
-
-
 /**
  * @brief Initializes the SC16IS740 UART bridge for basic operation.
  *
@@ -28,7 +23,6 @@ uint8_t (*IS740_readByte)(uint8_t regAddr);
  */
 void IS740_init(SC16IS740handle_t *hIS740){
 
-	IS740_registercallbacks(hIS740);
 	uint8_t tempreg;
 
 	tempreg = SC16IS740_LCR_DIVLATCHEN | SC16IS740_LCR_WORDLEN;
@@ -62,13 +56,13 @@ void IS740_init(SC16IS740handle_t *hIS740){
  * @param		Byte to send
  * @retval None
  */
-void IS740_transmitByte(uint8_t txByte){
+void IS740_transmitByte(SC16IS740handle_t *hIS740, uint8_t txByte){
 
 }
 
 
 /**
- * @brief  Transmits a single byte over UART using the SC16IS740.
+ * @brief  Receives a single byte over UART using the SC16IS740.
  *
  * Reads byte from the Receive Holding Register (RHR).
  *
@@ -76,43 +70,9 @@ void IS740_transmitByte(uint8_t txByte){
  *
  * @retval 		byte read from RHR
  */
-uint8_t IS740_receiveByte(void){
+uint8_t IS740_receiveByte(SC16IS740handle_t *hIS740){
 
 	return 0;
-}
-
-
-/**
- * @brief  Transmits a single byte over UART using the SC16IS740.
- *
- * Writes the given byte to the given register.
- *
- * @param  		register address to write to
- * @param  		register value to write
- *
- * @retval None
- */
-inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal){
-	IS740_writeByte(regAddr, regVal);
-}
-
-/**
- * @brief  Transmits a single byte over UART using the SC16IS740.
- *
- * Reads from the given regsiter.
- *
-* @param  		register address to read
-* @param
- * @retval None
- */
-inline uint8_t IS740_readReg(uint8_t regAddr){
-
-	return IS740_readByte(regAddr);
-}
-
-static void IS740_registercallbacks(SC16IS740handle_t *hIS740){
-	IS740_writeByte = hIS740->writeByte;
-	IS740_readByte = hIS740->readByte;
 }
 
 

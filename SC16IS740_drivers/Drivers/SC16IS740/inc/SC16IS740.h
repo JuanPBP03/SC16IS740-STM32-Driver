@@ -62,11 +62,8 @@ typedef struct
 
 void IS740_init(SC16IS740handle_t *hIS740);
 
-void IS740_transmitByte(uint8_t txByte);
+void IS740_transmitByte(SC16IS740handle_t *hIS740, uint8_t txByte);
 
-uint8_t IS740_receiveByte(void);
-
-extern inline void IS740_writeReg(uint8_t regAddr, uint8_t regVal);
-extern inline uint8_t IS740_readReg(uint8_t regAddr);
+uint8_t IS740_receiveByte(SC16IS740handle_t *hIS740);
 
 #endif /* SC16IS740_SC16IS740_H_ */
