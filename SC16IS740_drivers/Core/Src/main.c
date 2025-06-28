@@ -118,7 +118,7 @@ int main(void)
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
 	  delay(200000);
 
-	  IS740_writeReg(SC16IS740_THR_ADDR, 0xAA);
+	  bridge.writeByte(SC16IS740_THR_ADDR, 0xAA);
 
 
     /* USER CODE END WHILE */
@@ -167,6 +167,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSI, RCC_MCODIV_1);
 }
 
 /* USER CODE BEGIN 4 */
