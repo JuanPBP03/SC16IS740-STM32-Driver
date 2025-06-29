@@ -5,23 +5,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Drivers/SC16IS740/src/SC16IS740.c 
+../Core/Src/tests/IS740_init_wr_test.c 
 
 OBJS += \
-./Drivers/SC16IS740/src/SC16IS740.o 
+./Core/Src/tests/IS740_init_wr_test.o 
 
 C_DEPS += \
-./Drivers/SC16IS740/src/SC16IS740.d 
+./Core/Src/tests/IS740_init_wr_test.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Drivers/SC16IS740/src/%.o Drivers/SC16IS740/src/%.su Drivers/SC16IS740/src/%.cyclo: ../Drivers/SC16IS740/src/%.c Drivers/SC16IS740/src/subdir.mk
+Core/Src/tests/%.o Core/Src/tests/%.su Core/Src/tests/%.cyclo: ../Core/Src/tests/%.c Core/Src/tests/subdir.mk
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I"C:/Users/juanp/Documents/SC16IS740-driver/SC16IS740_drivers/Drivers/SC16IS740/inc" -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
-clean: clean-Drivers-2f-SC16IS740-2f-src
+clean: clean-Core-2f-Src-2f-tests
 
-clean-Drivers-2f-SC16IS740-2f-src:
-	-$(RM) ./Drivers/SC16IS740/src/SC16IS740.cyclo ./Drivers/SC16IS740/src/SC16IS740.d ./Drivers/SC16IS740/src/SC16IS740.o ./Drivers/SC16IS740/src/SC16IS740.su
+clean-Core-2f-Src-2f-tests:
+	-$(RM) ./Core/Src/tests/IS740_init_wr_test.cyclo ./Core/Src/tests/IS740_init_wr_test.d ./Core/Src/tests/IS740_init_wr_test.o ./Core/Src/tests/IS740_init_wr_test.su
 
-.PHONY: clean-Drivers-2f-SC16IS740-2f-src
+.PHONY: clean-Core-2f-Src-2f-tests
 
