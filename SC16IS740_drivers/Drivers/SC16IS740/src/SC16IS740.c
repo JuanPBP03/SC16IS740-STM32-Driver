@@ -11,6 +11,16 @@
 #include <stdint.h>
 #include "SC16IS740.h"
 
+
+
+
+uint8_t* IS740_setClkDiv(SC16IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate){
+	uint16_t temp = sysclk/(baudrate*16);
+	hIS740->config.clkDiv[0] = (uint8_t)temp;
+	hIS740->config.clkDiv[1] = (uint8_t)(temp>>8);
+	return hIS740->config.clkDiv;
+}
+
 /**
  * @brief Initializes the SC16IS740 UART bridge for basic operation.
  *
@@ -33,10 +43,10 @@ void IS740_init(SC16IS740handle_t *hIS740){
 	hIS740->writeByte(SC16IS740_LCR_ADDR_REGSEL, tempreg);
 	hIS740->readByte(SC16IS740_LCR_ADDR_REGSEL);
 	// Set low byte
-	hIS740->writeByte(SC16IS740_DLL_ADDR_REGSEL, hIS740->config.divLow);
+	hIS740->writeByte(SC16IS740_DLL_ADDR_REGSEL, hIS740->config.clkDiv[0]);
 	hIS740->readByte(SC16IS740_DLL_ADDR_REGSEL);
 	// Set high byte
-	hIS740->writeByte(SC16IS740_DLH_ADDR_REGSEL, hIS740->config.divHigh);
+	hIS740->writeByte(SC16IS740_DLH_ADDR_REGSEL, hIS740->config.clkDiv[1]);
 	hIS740->readByte(SC16IS740_DLH_ADDR_REGSEL);
 
 	// Disable divisor latch
@@ -57,7 +67,7 @@ void IS740_init(SC16IS740handle_t *hIS740){
  * @retval None
  */
 void IS740_transmitByte(SC16IS740handle_t *hIS740, uint8_t txByte){
-
+	hIS740->writeByte(SC16IS740_THR_ADDR, txByte);
 }
 
 

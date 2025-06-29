@@ -42,8 +42,7 @@
 
 typedef struct
 {
-	uint8_t divLow;
-	uint8_t divHigh;
+	uint8_t clkDiv[2];
 	uint8_t parity;
 	uint8_t stopBits;
 	uint8_t wordLen;
@@ -59,6 +58,7 @@ typedef struct
 	uint8_t state;
 }SC16IS740handle_t;
 
+uint8_t* IS740_setClkDiv(SC16IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate);
 
 void IS740_init(SC16IS740handle_t *hIS740);
 

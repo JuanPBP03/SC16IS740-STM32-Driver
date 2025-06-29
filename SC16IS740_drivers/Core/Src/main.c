@@ -53,7 +53,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void byteSendToBridge(uint8_t addr, uint8_t val);
 uint8_t byteReadFromBridge(uint8_t addr);
-void delay(uint32_t t);
+void delayMs(uint32_t t);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -98,13 +98,8 @@ int main(void)
 	bridge.state = 0;
 	bridge.addr = 0;
 
-	SC16IS740cfg_t bridge_config = {0};
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
-	uint32_t clkdiv = (pclk1 / (9600*16));
-	bridge_config.divLow = (uint8_t)clkdiv;
-	bridge_config.divHigh = (uint8_t)(clkdiv>>8);
-
-	bridge.config = bridge_config;
+	IS740_setClkDiv(&bridge, pclk1, 96000);
 	IS740_init(&bridge);
 
 
@@ -116,7 +111,7 @@ int main(void)
   {
 
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delay(200000);
+	  delayMs(100);
 
 	  bridge.writeByte(SC16IS740_THR_ADDR, 0xAA);
 
@@ -181,8 +176,12 @@ uint8_t byteReadFromBridge(uint8_t addr){
 	return *data;
 }
 
-void delay(uint32_t t){
-	for(int i=0;i<t;i++);
+void delayMs(uint32_t t){
+	uint32_t temp = HAL_RCC_GetSysClockFreq();
+	// 13.2 clocks/loop * s/clock = s/loop
+	// loops = s/(13.2*sysclk) = ms/(13200*sysclk)
+	temp = t*temp/13200;
+	for(int i=0;i<temp;i++);
 }
 
 /* USER CODE END 4 */

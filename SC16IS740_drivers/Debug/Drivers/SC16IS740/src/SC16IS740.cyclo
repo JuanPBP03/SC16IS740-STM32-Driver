@@ -1,3 +1,4 @@
-../Drivers/SC16IS740/src/SC16IS740.c:24:6:IS740_init	1
-../Drivers/SC16IS740/src/SC16IS740.c:59:6:IS740_transmitByte	1
-../Drivers/SC16IS740/src/SC16IS740.c:73:9:IS740_receiveByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:17:10:IS740_setClkDiv	1
+../Drivers/SC16IS740/src/SC16IS740.c:34:6:IS740_init	1
+../Drivers/SC16IS740/src/SC16IS740.c:69:6:IS740_transmitByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:83:9:IS740_receiveByte	1
