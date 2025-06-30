@@ -19,7 +19,7 @@
 
 typedef struct
 {
-	uint8_t clkDiv[2];
+	uint8_t baudRate;
 	uint8_t parity;
 	uint8_t stopBits;
 	uint8_t wordLen;

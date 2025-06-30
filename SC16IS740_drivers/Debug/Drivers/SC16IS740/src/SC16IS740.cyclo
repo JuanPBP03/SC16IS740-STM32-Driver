@@ -1,4 +1,4 @@
 ../Drivers/SC16IS740/src/SC16IS740.c:25:6:IS740_setBaudRate	1
-../Drivers/SC16IS740/src/SC16IS740.c:57:6:IS740_init	1
+../Drivers/SC16IS740/src/SC16IS740.c:59:6:IS740_init	1
 ../Drivers/SC16IS740/src/SC16IS740.c:85:6:IS740_transmitByte	1
 ../Drivers/SC16IS740/src/SC16IS740.c:99:9:IS740_receiveByte	1

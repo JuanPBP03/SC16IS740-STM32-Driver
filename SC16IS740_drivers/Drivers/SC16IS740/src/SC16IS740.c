@@ -20,26 +20,28 @@
  * @param		hIS740 Pointer to IC handle struct
  * @param		sysclk System clock frequency in Hz
  * @param		desired baudrate
- * @retval 		array of low and high bytes of clock div value
+ * @retval
  */
 void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate){
-	uint16_t temp = sysclk/(baudrate*16);
-	hIS740->config.clkDiv[0] = (uint8_t)temp;
-	hIS740->config.clkDiv[1] = (uint8_t)(temp>>8);
 
-	temp = hIS740->readByte(IS740_LCR_ADDR_REGSEL);
-	temp = temp | IS740_LCR_DIVLATCHEN;
+	uint32_t temp = sysclk/(baudrate*16);
+	uint8_t temp2;
 
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, (uint8_t)temp);
+	// Set Div latch enable bit without altering other bits
+	temp2 = hIS740->readByte(IS740_LCR_ADDR_REGSEL);
+	temp2 = temp2 | IS740_LCR_DIVLATCHEN;
 
-	// Set low byte
-	hIS740->writeByte(IS740_DLL_ADDR_REGSEL, hIS740->config.clkDiv[0]);
+	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, temp2);
 
-	// Set high byte
-	hIS740->writeByte(IS740_DLH_ADDR_REGSEL, hIS740->config.clkDiv[1]);
+	// Set div latch low byte
+	hIS740->writeByte(IS740_DLL_ADDR_REGSEL, (uint8_t)temp);
 
-	temp &= ~IS740_LCR_DIVLATCHEN;
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, (uint8_t)temp);
+	// Set div latch high byte
+	hIS740->writeByte(IS740_DLH_ADDR_REGSEL, (uint8_t)(temp>>8));
+
+	// Disable Divisor Latch
+	temp2 &= ~IS740_LCR_DIVLATCHEN;
+	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, temp2);
 
 
 }
@@ -48,7 +50,7 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate
  * @brief Initializes the IS740 UART bridge for basic operation.
  *
  * This function configures the baud rate, enables FIFOs, and sets the
- * line format to 8 data bits, no parity, and 1 stop bit (8N1).
+ * line word length, parity, and stop bits.
  *
  *
  * @param		Pointer to IC handle struct
@@ -60,14 +62,12 @@ void IS740_init(IS740handle_t *hIS740){
 
 	tempreg = IS740_LCR_DIVLATCHEN | IS740_LCR_WORDLEN;
 
-	//	1. Configure clock divisor
+
 
 	// Configure line control register
 	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, tempreg);
 
-	// Disable divisor latch
-	tempreg ^= IS740_LCR_DIVLATCHEN;
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, tempreg);
+
 
 
 }
