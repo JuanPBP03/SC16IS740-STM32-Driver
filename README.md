@@ -1,4 +1,4 @@
-# I2C/SPI to UART Bridge V0.8
+# I2C/SPI to UART Bridge V0.8.0
 
 A minimal driver for the NXP SC16IS740 I2C/SPI to UART bridge.
 
