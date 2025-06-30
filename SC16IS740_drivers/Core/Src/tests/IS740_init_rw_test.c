@@ -96,7 +96,6 @@ int main(void)
 	bridge.readFunc= ReadFromBridge;
 	bridge.writeFunc = SendToBridge;
 	bridge.config.baudRate = 9600;
-	bridge.state = 0;
 
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
 	IS740_setBaudRate(&bridge, pclk1, 9600);
@@ -171,15 +170,21 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
-	HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
-	return 0;
+	HAL_StatusTypeDef status;
+	status = HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
+	if(status==HAL_TIMEOUT)
+		return IS740_ERROR_TIMEOUT;
+	else
+		return IS740_ERROR_UNKNOWN;
 }
 IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
-
-	HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
-
-	return 0;
-
+	HAL_StatusTypeDef status;
+	HAL_UART
+	status = HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
+	if(status==HAL_TIMEOUT)
+		return IS740_ERROR_TIMEOUT;
+	else
+		return IS740_ERROR_UNKNOWN;
 }
 
 void delayMs(uint32_t t){

@@ -5,13 +5,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/tests/IS740_transmitByte_test.c 
+../Core/Src/tests/IS740_transmitStream_test.c 
 
 OBJS += \
-./Core/Src/tests/IS740_transmitByte_test.o 
+./Core/Src/tests/IS740_transmitStream_test.o 
 
 C_DEPS += \
-./Core/Src/tests/IS740_transmitByte_test.d 
+./Core/Src/tests/IS740_transmitStream_test.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +21,7 @@ Core/Src/tests/%.o Core/Src/tests/%.su Core/Src/tests/%.cyclo: ../Core/Src/tests
 clean: clean-Core-2f-Src-2f-tests
 
 clean-Core-2f-Src-2f-tests:
-	-$(RM) ./Core/Src/tests/IS740_transmitByte_test.cyclo ./Core/Src/tests/IS740_transmitByte_test.d ./Core/Src/tests/IS740_transmitByte_test.o ./Core/Src/tests/IS740_transmitByte_test.su
+	-$(RM) ./Core/Src/tests/IS740_transmitStream_test.cyclo ./Core/Src/tests/IS740_transmitStream_test.d ./Core/Src/tests/IS740_transmitStream_test.o ./Core/Src/tests/IS740_transmitStream_test.su
 
 .PHONY: clean-Core-2f-Src-2f-tests
 

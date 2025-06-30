@@ -96,13 +96,15 @@ int main(void)
 	bridge.readFunc= ReadFromBridge;
 	bridge.writeFunc = SendToBridge;
 	bridge.config.baudRate = 9600;
-	bridge.state = 0;
+	bridge.config.parity = IS740_PARITY_NONE;
+	bridge.config.stopBits = IS740_STOPLEN_1;
+	bridge.config.wordLen = IS740_WORDLEN_8;
 
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
 	IS740_setBaudRate(&bridge, pclk1);
 	IS740_init(&bridge);
 
-
+	uint8_t string[] = "Hello World!\n";
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -111,10 +113,9 @@ int main(void)
   {
 
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delayMs(100);
+	  delayMs(150);
 
-	  IS740_transmitByte(&bridge, 0xAA);
-
+	  IS740_transmitStream(&bridge, string, sizeof(string));
 
     /* USER CODE END WHILE */
 
@@ -171,16 +172,20 @@ IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
 	status = HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
 	if(status==HAL_TIMEOUT)
 		return IS740_ERROR_TIMEOUT;
-	else
+	else if(status == HAL_ERROR)
 		return IS740_ERROR_UNKNOWN;
+
+	return IS740_ERROR_NONE;
 }
 IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
 	HAL_StatusTypeDef status;
 	status = HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
 	if(status==HAL_TIMEOUT)
 		return IS740_ERROR_TIMEOUT;
-	else
+	else if(status == HAL_ERROR)
 		return IS740_ERROR_UNKNOWN;
+
+	return IS740_ERROR_NONE;
 }
 
 void delayMs(uint32_t t){

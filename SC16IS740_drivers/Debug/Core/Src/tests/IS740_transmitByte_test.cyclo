@@ -1,6 +1,0 @@
-../Core/Src/tests/IS740_transmitByte_test.c:68:5:main	2
-../Core/Src/tests/IS740_transmitByte_test.c:130:6:SystemClock_Config	3
-../Core/Src/tests/IS740_transmitByte_test.c:169:6:SendToBridge	1
-../Core/Src/tests/IS740_transmitByte_test.c:172:6:ReadFromBridge	1
-../Core/Src/tests/IS740_transmitByte_test.c:178:6:delayMs	2
-../Core/Src/tests/IS740_transmitByte_test.c:191:6:Error_Handler	1

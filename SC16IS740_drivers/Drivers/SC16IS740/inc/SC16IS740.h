@@ -13,25 +13,31 @@
 
 
 typedef enum{
-	IS740_STATE_READY = 0,
-	IS740_STATE_BUSYTX,
-	IS740_STATE_ERROR,
+	IS740_STATE_RESET = 0x20010000UL,
+	IS740_STATE_READY = 0x20020000UL,
+	IS740_STATE_BUSY = 0x20040000UL,
+	IS740_STATE_BUSY_TX = 0x20080000UL,
+	IS740_STATE_BUSY_RX = 0x20100000UL,
+	IS740_STATE_BUSY_TXRX = 0x20110000UL,
+	IS740_STATE_ERROR = 0x20120000UL,
+
 }IS740state_t;
 
-#define IS740_FLAG_TXE				IS740_LSR_TXE_POS
-#define IS740_FLAG_THRE				IS740_LSR_THRE_POS
-#define IS740_FLAG_RXNE				IS740_LSR_RXNE_POS
-#define IS740_FLAG_FIFOERR			IS740_LSR_FIFOERR_POS
-#define IS740_FLAG_OVRERR			IS740_LSR_OVR__POSPOS
+#define IS740_FLAG_TXE				IS740_LSR_TXE
+#define IS740_FLAG_THRE				IS740_LSR_THRE
+#define IS740_FLAG_RXNE				IS740_LSR_RXNE
+#define IS740_FLAG_FIFOERR			IS740_LSR_FIFOERR
+#define IS740_FLAG_OVRERR			IS740_LSR_OVR
 
 typedef enum{
-	IS740_ERROR_NONE = 0,
-	IS740_ERROR_BREAK,
-	IS740_ERROR_FRAMING,
-	IS740_ERROR_PARITY,
-	IS740_ERROR_COMMS,
+	IS740_ERROR_NONE = 0xE0010000UL,
+	IS740_ERROR_BREAK = 0xE0020000UL,
+	IS740_ERROR_FRAMING = 0xE0040000UL,
+	IS740_ERROR_PARITY = 0xE0080000UL,
+	IS740_ERROR_TIMEOUT = 0xE0100000UL,
+	IS740_ERROR_OVERRUN = 0xE0110000UL,
+	IS740_ERROR_UNKNOWN = 0xE0120000UL,
 }IS740error_t;
-
 
 
 /*
@@ -51,9 +57,11 @@ typedef struct
 typedef struct
 {
 	IS740cfg_t config;
-	void (*writeFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to write from bridge (I2C/SPI)
-	void (*readFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to read from bridge (I2C/SPI)
+	IS740error_t (*writeFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to write from bridge (I2C/SPI)
+	IS740error_t (*readFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to read from bridge (I2C/SPI)
 	IS740state_t state;
+	IS740error_t errorcode;
+	uint8_t fifoen;
 }IS740handle_t;
 
 
@@ -63,6 +71,9 @@ typedef struct
 
 #define DISABLE							0U
 #define ENABLE							!DISABLE
+#define SET								ENABLE
+#define RESET							DISABLE
+
 
 /*
  * Config Macros
@@ -82,24 +93,24 @@ typedef struct
 #define IS740_WORDLEN_7					(2U<<IS740_LCR_WORDLEN_POS)
 #define IS740_WORDLEN_8					(3U<<IS740_LCR_WORDLEN_POS)
 
-
+void IS740_LoopbackControl(IS740handle_t *hIS740, uint8_t ENorDI);
 
 void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI);
 
-uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag);
+uint8_t IS740_getStatus(IS740handle_t *hIS740);
 
 void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk);
 
 void IS740_init(IS740handle_t *hIS740);
 
-void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte);
+IS740state_t IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte);
 
-uint8_t IS740_receiveByte(IS740handle_t *hIS740);
+uint32_t IS740_receiveByte(IS740handle_t *hIS740);
 
-void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
-void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
-void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte);
-uint8_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr);
+IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
+IS740state_t IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
+IS740error_t IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte);
+uint32_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr);
 
 
 #endif /* SC16IS740_SC16IS740_H_ */

@@ -10,20 +10,48 @@
 
 #include <stdint.h>
 #include "SC16IS740.h"
+#include <stdio.h>
+//static uint8_t IS740_getTXLVL(IS740handle_t *hIS740);
+//static uint8_t IS740_getRXLVL(IS740handle_t *hIS740);
 
 
-
-
-void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI){
-	uint8_t temp = IS740_readByte(hIS740, IS740_FCR_ADDR_REGSEL);
+/**
+ * @brief Enables or disables modem loopback
+ *
+ *
+ * @param		hIS740 Pointer to IC handle struct
+ * @param		ENorDI ENABLE(1) or DISABLE(0)
+ * @retval
+ */
+void IS740_LoopbackControl(IS740handle_t *hIS740, uint8_t ENorDI){
+	uint8_t temp = IS740_readByte(hIS740, IS740_MCR_ADDR_REGSEL);
 	if(ENorDI == ENABLE)
-		temp |= IS740_FCR_FIFOEN;
+		temp |= IS740_MCR_LOOPBACKEN;
 	else if(ENorDI == DISABLE)
-		temp &= ~IS740_FCR_FIFOEN;
+		temp &= ~IS740_MCR_LOOPBACKEN;
 	else
 		return;
 
-	IS740_writeByte(hIS740, IS740_FCR_ADDR_REGSEL, temp);
+	IS740_writeByte(hIS740, IS740_MCR_ADDR_REGSEL, temp);
+}
+
+/**
+ * @brief Enables or disables fifo queue
+ *
+ *
+ * @param		hIS740 Pointer to IC handle struct
+ * @param		ENorDI ENABLE(1) or DISABLE(0)
+ * @retval
+ */
+void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI){
+	if(ENorDI == ENABLE)
+		IS740_writeByte(hIS740, IS740_FCR_ADDR_REGSEL, 0x01);
+	else if(ENorDI == DISABLE)
+		IS740_writeByte(hIS740, IS740_FCR_ADDR_REGSEL, 0x00);
+	else
+		return;
+
+
 }
 
 /**
@@ -34,8 +62,8 @@ void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI){
  * @param		flag to check
  * @retval
  */
-uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
-	return (IS740_readByte(hIS740, IS740_LSR_ADDR_REGSEL)&flag);
+uint8_t IS740_getStatus(IS740handle_t *hIS740){
+	return IS740_readByte(hIS740, IS740_LSR_ADDR_REGSEL);
 }
 
 
@@ -49,6 +77,8 @@ uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
  * @retval
  */
 void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
+
+	hIS740->state = IS740_STATE_BUSY;
 
 	uint32_t temp = sysclk/(hIS740->config.baudRate*16);
 	uint8_t temp2;
@@ -69,6 +99,8 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
 	temp2 &= ~IS740_LCR_DIVLATCHEN;
 	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp2);
 
+	hIS740->state = IS740_STATE_RESET;
+
 }
 
 /**
@@ -83,15 +115,22 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
  */
 void IS740_init(IS740handle_t *hIS740){
 
-	uint8_t tempreg;
+	hIS740->state = IS740_STATE_BUSY;
 
-	tempreg = IS740_readByte(hIS740, IS740_LCR_ADDR_REGSEL) | IS740_LCR_WORDLEN;
+	uint8_t tempreg = 0;
+
+
+	tempreg |= hIS740->config.parity;
+	tempreg |= hIS740->config.stopBits;
+	tempreg |= hIS740->config.wordLen;
 
 	// Configure line control register
 	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, tempreg);
+	IS740_FIFOControl(hIS740, ENABLE);
 
-
-
+	hIS740->fifoen = SET;
+	hIS740->errorcode = IS740_ERROR_NONE;
+	hIS740->state = IS740_STATE_READY;
 
 }
 
@@ -105,8 +144,24 @@ void IS740_init(IS740handle_t *hIS740){
  * @param		txByte Byte to send
  * @retval None
  */
-void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
-	IS740_writeByte(hIS740, IS740_THR_ADDR, txByte);
+IS740state_t IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
+
+	if(hIS740->state != IS740_STATE_READY)
+		return IS740_STATE_BUSY;
+
+	if(!(IS740_getStatus(hIS740) & IS740_FLAG_THRE)){
+		return IS740_STATE_BUSY_TX;
+	}
+
+	hIS740->state = IS740_STATE_BUSY_TX;
+	IS740_FIFOControl(hIS740, ENABLE);
+
+	if(IS740_writeByte(hIS740, IS740_THR_ADDR, txByte) != IS740_ERROR_NONE){
+		return IS740_STATE_ERROR;
+	}
+
+	hIS740->state = IS740_STATE_READY;
+	return IS740_STATE_READY;
 }
 
 
@@ -116,17 +171,28 @@ void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
  * Reads byte from the Receive Holding Register (RHR).
  *
  *
- * @param		hIS740 Handle of bridge to receive from
- * @retval 		byte read from RHR
+ * @param		hIS740 Handle of IS740 to receive from
+ * @retval 		byte read from RHR or IS740 state
  */
-uint8_t IS740_receiveByte(IS740handle_t *hIS740){
+uint32_t IS740_receiveByte(IS740handle_t *hIS740){
+	uint32_t byte;
+	if(hIS740->state != IS740_STATE_READY)
+		return IS740_STATE_BUSY;
 
-	return IS740_readByte(hIS740, IS740_RHR_ADDR);
+	if(!(IS740_getStatus(hIS740) & IS740_FLAG_RXNE)){
+		return IS740_STATE_READY;
+	}
+	hIS740->state = IS740_STATE_BUSY_TX;
+	byte = IS740_readByte(hIS740, IS740_RHR_ADDR);
+
+
+	hIS740->state = IS740_STATE_READY;
+	return byte;
 }
 
 
 /**
- * @brief  Transmits a stream of bytes over UART using the IS740.
+ * @brief  Transmits a stream of up to 64 bytes over UART using the IS740.
  *
  * Writes the stream of bytes to the Transmit Holding Register (THR).
  *
@@ -134,10 +200,37 @@ uint8_t IS740_receiveByte(IS740handle_t *hIS740){
  * @param		hIS740 Handle of bridge to transmit from
  * @param		buff Array of bytes to transmit
  * @param		size Size of array
- * @retval 		none
+ * @retval 		IS740 state
  */
-void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
 
+	uint32_t status;
+	if(hIS740->state != IS740_STATE_READY)
+		return IS740_STATE_BUSY;
+	if(size>64){
+		hIS740->errorcode = IS740_ERROR_OVERRUN;
+		hIS740->state = IS740_STATE_ERROR;
+		return IS740_STATE_ERROR;
+	}
+	if(!(IS740_getStatus(hIS740) & IS740_FLAG_TXE)){
+		return IS740_STATE_BUSY_TX;
+	}
+	hIS740->state = IS740_STATE_BUSY_TX;
+
+	if(hIS740->fifoen == RESET){
+		IS740_FIFOControl(hIS740, ENABLE);
+		hIS740->fifoen = SET;
+	}
+
+	status  = hIS740->writeFunc(IS740_THR_ADDR, buff, size);
+
+	if(status != IS740_ERROR_NONE){
+		hIS740->errorcode = status;
+		hIS740->state = IS740_STATE_ERROR;
+		return IS740_STATE_ERROR;
+	}
+	hIS740->state = IS740_STATE_READY;
+	return IS740_STATE_READY;
 }
 
 /**
@@ -149,10 +242,12 @@ void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
  * @param		hIS740 Handle of bridge to receive from
  * @param		buff Array of bytes to receive into
  * @param		size Size of array
- * @retval 		none
+ * @retval 		IS740 state
  */
-void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+IS740state_t IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
 
+
+	return IS740_STATE_READY;
 }
 /**
  * @brief  Writes a single byte to a given register of the IS740.
@@ -165,8 +260,14 @@ void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
  * @param		byte Byte too write to internal register
  * @retval 		none
  */
-void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte){
-	hIS740->writeFunc(regAddr, &byte, 1);
+IS740error_t IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte){
+	IS740error_t status = hIS740->writeFunc(regAddr, &byte, 1);
+	if( status != IS740_ERROR_NONE ){
+			printf("ERROR: writeByte failed!\n");
+			hIS740->errorcode = status;
+			return status;
+		}
+	return IS740_ERROR_NONE;
 }
 
 /**
@@ -179,11 +280,27 @@ void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte){
  * @param		regAddr Address of IS740 internal register
  * @retval 		data Byte read from RHR
  */
-uint8_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr){
-	uint8_t *data = 0;
-	hIS740->readFunc(regAddr, data, 1);
-	return *data;
+uint32_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr){
+	uint8_t data[1];
+	uint32_t status = hIS740->readFunc(regAddr, data, 1);
+	if( status != IS740_ERROR_NONE ){
+		printf("ERROR: readByte failed!\n");
+		hIS740->errorcode = status;
+		return status;
+	}
+	return data[0];
+}
+/*
+static uint8_t IS740_getTXLVL(IS740handle_t *hIS740){
+
+	return (IS740_readByte(hIS740, IS740_TXLVL_ADDR_REGSEL) & IS740_TXLVL);
+
+}
+static uint8_t IS740_getRXLVL(IS740handle_t *hIS740){
+
+	return (IS740_readByte(hIS740, IS740_RXLVL_ADDR_REGSEL) & IS740_RXLVL);
+
 }
 
-
+*/
 #endif /* SC16IS740_SC16IS740_CPP_ */
