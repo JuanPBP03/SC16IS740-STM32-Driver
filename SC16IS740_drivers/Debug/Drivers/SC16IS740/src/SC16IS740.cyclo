@@ -1,4 +1,7 @@
-../Drivers/SC16IS740/src/SC16IS740.c:25:6:IS740_setBaudRate	1
-../Drivers/SC16IS740/src/SC16IS740.c:59:6:IS740_init	1
-../Drivers/SC16IS740/src/SC16IS740.c:85:6:IS740_transmitByte	1
-../Drivers/SC16IS740/src/SC16IS740.c:99:9:IS740_receiveByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:15:14:IS740_getFlag	1
+../Drivers/SC16IS740/src/SC16IS740.c:29:6:IS740_setBaudRate	1
+../Drivers/SC16IS740/src/SC16IS740.c:62:6:IS740_init	1
+../Drivers/SC16IS740/src/SC16IS740.c:86:6:IS740_transmitByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:100:9:IS740_receiveByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:108:6:IS740_writeByte	1
+../Drivers/SC16IS740/src/SC16IS740.c:111:9:IS740_readByte	1

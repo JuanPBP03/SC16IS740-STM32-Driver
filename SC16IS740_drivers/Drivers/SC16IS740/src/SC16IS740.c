@@ -12,6 +12,10 @@
 #include "SC16IS740.h"
 
 
+IS740error_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
+	return (IS740_readByte(hIS740, IS740_LSR_ADDR_REGSEL)&flag);
+}
+
 
 /**
  * @brief Calculates and sets clkDiv values for baud rate generator
@@ -28,21 +32,20 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate
 	uint8_t temp2;
 
 	// Set Div latch enable bit without altering other bits
-	temp2 = hIS740->readByte(IS740_LCR_ADDR_REGSEL);
+	temp2 = IS740_readByte(hIS740, IS740_LCR_ADDR_REGSEL);
 	temp2 = temp2 | IS740_LCR_DIVLATCHEN;
 
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, temp2);
+	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp2);
 
 	// Set div latch low byte
-	hIS740->writeByte(IS740_DLL_ADDR_REGSEL, (uint8_t)temp);
+	IS740_writeByte(hIS740, IS740_DLL_ADDR_REGSEL, (uint8_t)temp);
 
 	// Set div latch high byte
-	hIS740->writeByte(IS740_DLH_ADDR_REGSEL, (uint8_t)(temp>>8));
+	IS740_writeByte(hIS740, IS740_DLH_ADDR_REGSEL, (uint8_t)(temp>>8));
 
 	// Disable Divisor Latch
 	temp2 &= ~IS740_LCR_DIVLATCHEN;
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, temp2);
-
+	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp2);
 
 }
 
@@ -60,12 +63,10 @@ void IS740_init(IS740handle_t *hIS740){
 
 	uint8_t tempreg;
 
-	tempreg = IS740_LCR_DIVLATCHEN | IS740_LCR_WORDLEN;
-
-
+	tempreg = IS740_readByte(hIS740, IS740_LCR_ADDR_REGSEL) | IS740_LCR_WORDLEN;
 
 	// Configure line control register
-	hIS740->writeByte(IS740_LCR_ADDR_REGSEL, tempreg);
+	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, tempreg);
 
 
 
@@ -83,7 +84,7 @@ void IS740_init(IS740handle_t *hIS740){
  * @retval None
  */
 void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
-	hIS740->writeByte(IS740_THR_ADDR, txByte);
+	IS740_writeByte(hIS740, IS740_THR_ADDR, txByte);
 }
 
 
@@ -99,6 +100,18 @@ void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
 uint8_t IS740_receiveByte(IS740handle_t *hIS740){
 
 	return 0;
+}
+
+void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff);
+void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff);
+
+void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte){
+	hIS740->writeFunc(regAddr, &byte, 1);
+}
+uint8_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr){
+	uint8_t *data = 0;
+	hIS740->readFunc(regAddr, data, 1);
+	return *data;
 }
 
 
