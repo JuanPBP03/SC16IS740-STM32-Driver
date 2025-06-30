@@ -13,6 +13,9 @@ The driver currently supports transmission and reception in bursts of up to 64 b
 - [x] Byte-wise Tx/Rx
 - [x] 64-Byte burst Tx/Rx
 - [x] Loopback testing
+- [x] Basic error reporting
+
+## Planned Features
 - [ ] Continuous blocking Tx/Rx
 - [ ] Interrupt support
 - [ ] Software Flow-control
