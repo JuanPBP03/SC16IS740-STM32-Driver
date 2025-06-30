@@ -51,8 +51,8 @@ typedef struct
 typedef struct
 {
 	IS740cfg_t config;
-	IS740error_t (*writeFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to write from bridge (I2C/SPI)
-	IS740error_t (*readFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to read from bridge (I2C/SPI)
+	void (*writeFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to write from bridge (I2C/SPI)
+	void (*readFunc)(uint8_t regAddr, uint8_t *buffer, uint8_t size);		// function used to read from bridge (I2C/SPI)
 	IS740state_t state;
 }IS740handle_t;
 
@@ -88,7 +88,7 @@ void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI);
 
 uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag);
 
-void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate);
+void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk);
 
 void IS740_init(IS740handle_t *hIS740);
 

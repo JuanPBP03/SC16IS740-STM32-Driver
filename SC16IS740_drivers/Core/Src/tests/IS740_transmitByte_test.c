@@ -51,8 +51,8 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
-IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
+void SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
+void ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
 void delayMs(uint32_t t);
 /* USER CODE END PFP */
 
@@ -99,7 +99,7 @@ int main(void)
 	bridge.state = 0;
 
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
-	IS740_setBaudRate(&bridge, pclk1, 9600);
+	IS740_setBaudRate(&bridge, pclk1);
 	IS740_init(&bridge);
 
 
@@ -166,15 +166,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
+void SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
 	HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
-	return 0;
 }
-IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
+void ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
 
 	HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
-
-	return 0;
 
 }
 

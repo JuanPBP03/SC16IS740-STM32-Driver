@@ -48,9 +48,9 @@ uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
  * @param		desired baudrate
  * @retval
  */
-void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate){
+void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
 
-	uint32_t temp = sysclk/(baudrate*16);
+	uint32_t temp = sysclk/(hIS740->config.baudRate*16);
 	uint8_t temp2;
 
 	// Set Div latch enable bit without altering other bits
@@ -121,7 +121,7 @@ void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
  */
 uint8_t IS740_receiveByte(IS740handle_t *hIS740){
 
-	return 0;
+	return IS740_readByte(hIS740, IS740_RHR_ADDR);
 }
 
 

@@ -1,6 +1,0 @@
-../Core/Src/tests/IS740_init_rw_test.c:68:5:main	3
-../Core/Src/tests/IS740_init_rw_test.c:134:6:SystemClock_Config	3
-../Core/Src/tests/IS740_init_rw_test.c:173:14:SendToBridge	1
-../Core/Src/tests/IS740_init_rw_test.c:177:14:ReadFromBridge	1
-../Core/Src/tests/IS740_init_rw_test.c:185:6:delayMs	2
-../Core/Src/tests/IS740_init_rw_test.c:198:6:Error_Handler	1
