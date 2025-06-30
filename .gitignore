@@ -77,7 +77,6 @@ local.properties
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject
 
-
 # CDT- autotools
 .autotools
 
@@ -120,3 +119,15 @@ local.properties
 .sts4-cache/
 
 # End of https://www.toptal.com/developers/gitignore/api/eclipse
+
+# Ignore CubeIDE build/debug outputs
+SC16IS740_drivers/Debug/
+SC16IS740_drivers/Release/
+*.o
+*.d
+*.elf
+*.map
+*.list
+*.cyclo
+*.mk
+*.log
