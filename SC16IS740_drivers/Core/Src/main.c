@@ -92,14 +92,14 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-	SC16IS740handle_t bridge;
+	IS740handle_t bridge;
 	bridge.readByte = byteReadFromBridge;
 	bridge.writeByte = byteSendToBridge;
 	bridge.state = 0;
 	bridge.addr = 0;
 
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
-	IS740_setClkDiv(&bridge, pclk1, 96000);
+	IS740_setBaudRate(&bridge, pclk1, 96000);
 	IS740_init(&bridge);
 
 
@@ -113,7 +113,7 @@ int main(void)
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
 	  delayMs(100);
 
-	  bridge.writeByte(SC16IS740_THR_ADDR, 0xAA);
+	  bridge.writeByte(IS740_THR_ADDR, 0xAA);
 
 
     /* USER CODE END WHILE */

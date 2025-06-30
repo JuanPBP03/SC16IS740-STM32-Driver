@@ -61,8 +61,8 @@ all: main-build
 main-build: SC16IS740_drivers.elf secondary-outputs
 
 # Tool invocations
-SC16IS740_drivers.elf SC16IS740_drivers.map: $(OBJS) $(USER_OBJS) C:\Users\juanp\Documents\SC16IS740-driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "SC16IS740_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\juanp\Documents\SC16IS740-driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SC16IS740_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+SC16IS740_drivers.elf SC16IS740_drivers.map: $(OBJS) $(USER_OBJS) D:\Documents\SC16IS740-STM32-Driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "SC16IS740_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Documents\SC16IS740-STM32-Driver\SC16IS740_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SC16IS740_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
