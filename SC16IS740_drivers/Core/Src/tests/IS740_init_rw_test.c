@@ -51,9 +51,9 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void byteSendToBridge(uint8_t addr, uint8_t val);
-uint8_t byteReadFromBridge(uint8_t addr);
-void delay(uint32_t t);
+IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
+IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size);
+void delayMs(uint32_t t);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,19 +92,14 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-	SC16IS740handle_t bridge;
-	bridge.readByte = byteReadFromBridge;
-	bridge.writeByte = byteSendToBridge;
+	IS740handle_t bridge;
+	bridge.readFunc= ReadFromBridge;
+	bridge.writeFunc = SendToBridge;
+	bridge.config.baudRate = 9600;
 	bridge.state = 0;
-	bridge.addr = 0;
 
-	SC16IS740cfg_t bridge_config = {0};
 	uint32_t pclk1 = HAL_RCC_GetPCLK1Freq();
-	uint32_t clkdiv = (pclk1 / (9600*16));
-	bridge_config.divLow = (uint8_t)clkdiv;
-	bridge_config.divHigh = (uint8_t)(clkdiv>>4);
-
-	bridge.config = bridge_config;
+	IS740_setBaudRate(&bridge, pclk1, 9600);
 	IS740_init(&bridge);
 
 
@@ -114,16 +109,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  uint8_t data;
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delay(200000);
+	  delayMs(150);
 
-	  IS740_writeReg(SC16IS740_SPR_ADDR_REGSEL, 0xAA);
+	  IS740_writeByte(&bridge, IS740_SPR_ADDR_REGSEL, 0xAA);
 
 	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delay(200000);
-	  data = IS740_readReg(SC16IS740_SPR_ADDR_REGSEL);
-
+	  delayMs(150);
+	  data = IS740_readByte(&bridge, IS740_SPR_ADDR_REGSEL);
 
     /* USER CODE END WHILE */
 
@@ -171,23 +166,29 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSI, RCC_MCODIV_1);
 }
 
 /* USER CODE BEGIN 4 */
-void byteSendToBridge(uint8_t addr, uint8_t val){
-	HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, &val, 1, 1000);
+IS740error_t SendToBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
+	HAL_I2C_Mem_Write(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
+	return 0;
 }
-uint8_t byteReadFromBridge(uint8_t addr){
+IS740error_t ReadFromBridge(uint8_t addr, uint8_t *buffer, uint8_t size){
 
-	uint8_t *data = 0;
-	HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, data, 1, 1000);
-	return *data;
-}
+	HAL_I2C_Mem_Read(&hi2c1, 0x90, addr, 1, buffer, size, 1000);
 
-void delay(uint32_t t){
-	for(int i=0;i<t;i++);
+	return 0;
+
 }
 
+void delayMs(uint32_t t){
+	uint32_t temp = HAL_RCC_GetSysClockFreq();
+	// 13.2 clocks/loop * s/clock = s/loop
+	// loops = s/(13.2*sysclk) = ms/(13200*sysclk)
+	temp = t*temp/13200;
+	for(int i=0;i<temp;i++);
+}
 /* USER CODE END 4 */
 
 /**
