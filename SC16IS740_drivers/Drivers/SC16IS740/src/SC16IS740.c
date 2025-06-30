@@ -13,7 +13,18 @@
 #include <stdio.h>
 //static uint8_t IS740_getTXLVL(IS740handle_t *hIS740);
 //static uint8_t IS740_getRXLVL(IS740handle_t *hIS740);
+static void IS740_flushFIFO(IS740handle_t *hIS740);
 
+
+
+
+
+static void IS740_flushFIFO(IS740handle_t *hIS740){
+	uint8_t temp;
+	temp = IS740_FCR_RXRST | IS740_FCR_TXRST;
+
+	IS740_writeByte(hIS740, IS740_FCR_ADDR_REGSEL, temp);
+}
 
 /**
  * @brief Enables or disables modem loopback
@@ -116,7 +127,7 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
 void IS740_init(IS740handle_t *hIS740){
 
 	hIS740->state = IS740_STATE_BUSY;
-
+	IS740_flushFIFO(hIS740);
 	uint8_t tempreg = 0;
 
 
@@ -217,12 +228,7 @@ IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t 
 	}
 	hIS740->state = IS740_STATE_BUSY_TX;
 
-	if(hIS740->fifoen == RESET){
-		IS740_FIFOControl(hIS740, ENABLE);
-		hIS740->fifoen = SET;
-	}
-
-	status  = hIS740->writeFunc(IS740_THR_ADDR, buff, size);
+	status = hIS740->writeFunc(IS740_THR_ADDR, buff, size);
 
 	if(status != IS740_ERROR_NONE){
 		hIS740->errorcode = status;
@@ -246,7 +252,27 @@ IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t 
  */
 IS740state_t IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
 
+	uint32_t status;
+	if(hIS740->state != IS740_STATE_READY)
+		return IS740_STATE_BUSY;
+	if(size>64){
+		hIS740->errorcode = IS740_ERROR_OVERRUN;
+		hIS740->state = IS740_STATE_ERROR;
+		return IS740_STATE_ERROR;
+	}
+	if(!(IS740_getStatus(hIS740) & IS740_FLAG_RXNE)){
+		return IS740_STATE_READY;
+	}
+	hIS740->state = IS740_STATE_BUSY_RX;
 
+	status = hIS740->readFunc(IS740_THR_ADDR, buff, size);
+
+	if(status != IS740_ERROR_NONE){
+		hIS740->errorcode = status;
+		hIS740->state = IS740_STATE_ERROR;
+		return IS740_STATE_ERROR;
+	}
+	hIS740->state = IS740_STATE_READY;
 	return IS740_STATE_READY;
 }
 /**
