@@ -12,7 +12,29 @@
 #include "SC16IS740.h"
 
 
-IS740error_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
+
+
+void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI){
+	uint8_t temp = IS740_readByte(hIS740, IS740_FCR_ADDR_REGSEL);
+	if(ENorDI == ENABLE)
+		temp |= IS740_FCR_FIFOEN;
+	else if(ENorDI == DISABLE)
+		temp &= ~IS740_FCR_FIFOEN;
+	else
+		return;
+
+	IS740_writeByte(hIS740, IS740_FCR_ADDR_REGSEL, temp);
+}
+
+/**
+ * @brief Retrives given flag from line status register
+ *
+ *
+ * @param		hIS740 Pointer to IC handle struct
+ * @param		flag to check
+ * @retval
+ */
+uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag){
 	return (IS740_readByte(hIS740, IS740_LSR_ADDR_REGSEL)&flag);
 }
 
@@ -79,8 +101,8 @@ void IS740_init(IS740handle_t *hIS740){
  *
  * Writes the given byte to the Transmit Holding Register (THR).
  *
- *
- * @param		Byte to send
+ * @param		hIS740 Handle of bridge to transmit from
+ * @param		txByte Byte to send
  * @retval None
  */
 void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
@@ -94,7 +116,7 @@ void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte){
  * Reads byte from the Receive Holding Register (RHR).
  *
  *
- *
+ * @param		hIS740 Handle of bridge to receive from
  * @retval 		byte read from RHR
  */
 uint8_t IS740_receiveByte(IS740handle_t *hIS740){
@@ -102,12 +124,61 @@ uint8_t IS740_receiveByte(IS740handle_t *hIS740){
 	return 0;
 }
 
-void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff);
-void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff);
 
+/**
+ * @brief  Transmits a stream of bytes over UART using the IS740.
+ *
+ * Writes the stream of bytes to the Transmit Holding Register (THR).
+ *
+ *
+ * @param		hIS740 Handle of bridge to transmit from
+ * @param		buff Array of bytes to transmit
+ * @param		size Size of array
+ * @retval 		none
+ */
+void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+
+}
+
+/**
+ * @brief  Receives a stream of bytes over UART using the IS740.
+ *
+ * Reads the stream from the Receive Holding Register (RHR).
+ *
+ *
+ * @param		hIS740 Handle of bridge to receive from
+ * @param		buff Array of bytes to receive into
+ * @param		size Size of array
+ * @retval 		none
+ */
+void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+
+}
+/**
+ * @brief  Writes a single byte to a given register of the IS740.
+ *
+ *
+ *
+ *
+ * @param		hIS740 Handle of bridge to receive from
+ * @param		regAddr Address of IS740 internal register
+ * @param		byte Byte too write to internal register
+ * @retval 		none
+ */
 void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte){
 	hIS740->writeFunc(regAddr, &byte, 1);
 }
+
+/**
+ * @brief  Reads a single byte from a given register of the IS740.
+ *
+ *
+ *
+ *
+ * @param		hIS740 Handle of bridge to receive from
+ * @param		regAddr Address of IS740 internal register
+ * @retval 		data Byte read from RHR
+ */
 uint8_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr){
 	uint8_t *data = 0;
 	hIS740->readFunc(regAddr, data, 1);

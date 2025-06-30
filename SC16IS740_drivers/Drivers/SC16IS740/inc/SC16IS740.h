@@ -57,10 +57,36 @@ typedef struct
 }IS740handle_t;
 
 
+/*
+ * 	Helper Macros
+ */
+
+#define DISABLE							0U
+#define ENABLE							!DISABLE
+
+/*
+ * Config Macros
+ */
+#define IS740_PARITY_NONE				(0U<<IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_ODD				(1U<<IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_EVEN				(3U<<IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_FORCE1				(5U<<IS740_LCR_PARITYEN_POS)
+#define IS740_PARITY_FORCE0				(7U<<IS740_LCR_PARITYEN_POS)
+
+#define IS740_STOPLEN_1					(0U<<IS740_LCR_STOP_POS)
+#define IS740_STOPLEN_1HALF				(1U<<IS740_LCR_STOP_POS)
+#define IS740_STOPLEN_2					(1U<<IS740_LCR_STOP_POS)
+
+#define IS740_WORDLEN_5					(0U<<IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_6					(1U<<IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_7					(2U<<IS740_LCR_WORDLEN_POS)
+#define IS740_WORDLEN_8					(3U<<IS740_LCR_WORDLEN_POS)
 
 
 
-IS740error_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag);
+void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI);
+
+uint8_t IS740_getFlag(IS740handle_t *hIS740, uint8_t flag);
 
 void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk, uint32_t baudrate);
 
@@ -70,8 +96,8 @@ void IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte);
 
 uint8_t IS740_receiveByte(IS740handle_t *hIS740);
 
-void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff);
-void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff);
+void IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
+void IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
 void IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte);
 uint8_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr);
 
