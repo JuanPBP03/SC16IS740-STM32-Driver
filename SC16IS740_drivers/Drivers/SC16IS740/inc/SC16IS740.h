@@ -100,6 +100,7 @@ void IS740_FIFOControl(IS740handle_t *hIS740, uint8_t ENorDI);
 uint8_t IS740_getStatus(IS740handle_t *hIS740);
 
 void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk);
+void IS740_setClkDiv(IS740handle_t *hIS740, uint16_t divisor);
 
 void IS740_init(IS740handle_t *hIS740);
 

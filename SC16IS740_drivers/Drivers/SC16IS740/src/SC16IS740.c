@@ -101,10 +101,10 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
 	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp2);
 
 	// Set div latch low byte
-	IS740_writeByte(hIS740, IS740_DLL_ADDR_REGSEL, (uint8_t)temp);
+	IS740_writeByte(hIS740, IS740_DLL_ADDR_REGSEL, (uint8_t)(temp & 0xFF));
 
 	// Set div latch high byte
-	IS740_writeByte(hIS740, IS740_DLH_ADDR_REGSEL, (uint8_t)(temp>>8));
+	IS740_writeByte(hIS740, IS740_DLH_ADDR_REGSEL, (uint8_t)(temp >> 8));
 
 	// Disable Divisor Latch
 	temp2 &= ~IS740_LCR_DIVLATCHEN;
@@ -112,6 +112,27 @@ void IS740_setBaudRate(IS740handle_t *hIS740, uint32_t sysclk){
 
 	hIS740->state = IS740_STATE_RESET;
 
+}
+/**
+ * @brief Overrides baud rate generator clock divisor in case error is too high when calculated automatically
+ *
+ *
+ * @param		hIS740 Pointer to IC handle struct
+ * @param		divider 16 bit clock divider
+ * @retval
+ */
+void IS740_setClkDiv(IS740handle_t *hIS740, uint16_t divider) {
+	hIS740->state = IS740_STATE_BUSY;
+
+	uint8_t temp = IS740_readByte(hIS740, IS740_LCR_ADDR_REGSEL);
+	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp | IS740_LCR_DIVLATCHEN);
+
+	IS740_writeByte(hIS740, IS740_DLL_ADDR_REGSEL, (uint8_t)(divider & 0xFF));
+	IS740_writeByte(hIS740, IS740_DLH_ADDR_REGSEL, (uint8_t)(divider >> 8));
+
+	IS740_writeByte(hIS740, IS740_LCR_ADDR_REGSEL, temp  & ~IS740_LCR_DIVLATCHEN);
+
+	hIS740->state = IS740_STATE_RESET;
 }
 
 /**

@@ -74,11 +74,11 @@
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec.2037911982" name="MCU Output Converter Motorola S-rec with symbols" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.objcopy.symbolsrec"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1118291114.820744015" name="IS740_transmitStream_test.c" rcbsApplicability="disable" resourcePath="Core/Src/tests/IS740_transmitStream_test.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223.1726830697">
-						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223.1726830697" name="MCU/MPU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223"/>
+					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.1118291114.1852933863" name="IS740_receiveStream_test.c" rcbsApplicability="disable" resourcePath="Core/Src/tests/IS740_receiveStream_test.c" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223.256408570">
+						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223.256408570" name="MCU/MPU GCC Compiler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.47590223"/>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="Src/tests/IS740_transmitStream_test.c|Src/tests/IS740_transmitByte_test.c|Src/tests/IS740_init_rw_test.c|Src/IS740_transmitByte_test.c|Src/tests/IS740_init_wr_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/tests/IS740_receiveStream_test.c|Src/tests/IS740_transmitStream_test.c|Src/tests/IS740_transmitByte_test.c|Src/tests/IS740_init_rw_test.c|Src/IS740_transmitByte_test.c|Src/tests/IS740_init_wr_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 					</sourceEntries>
 				</configuration>

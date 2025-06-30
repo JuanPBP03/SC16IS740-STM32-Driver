@@ -107,6 +107,12 @@ int main(void)
 
 	uint8_t string[] = "Hello World!\n";
 	uint8_t rxbuf[64];
+
+	delayMs(10);
+	IS740_transmitStream(&bridge, string, sizeof(string));
+	delayMs(20);
+	IS740_receiveStream(&bridge, rxbuf, sizeof(string));
+	printf("DATA: %s", rxbuf);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -114,15 +120,8 @@ int main(void)
   while (1)
   {
 
-	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delayMs(150);
 
-	  IS740_transmitStream(&bridge, string, sizeof(string));
 
-	  while(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0));
-	  delayMs(150);
-	  IS740_receiveStream(&bridge, rxbuf, sizeof(string));
-	  printf("DATA: %s", rxbuf);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

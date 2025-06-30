@@ -23,7 +23,6 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Core/Src \
-Core/Src/tests \
 Core/Startup \
 Drivers/SC16IS740/src \
 Drivers/STM32F4xx_HAL_Driver/Src \
