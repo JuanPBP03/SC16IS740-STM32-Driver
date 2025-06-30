@@ -276,7 +276,7 @@ uint32_t IS740_receiveByte(IS740handle_t *hIS740){
  * @param		size Size of array
  * @retval 		IS740 state
  */
-IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+IS740state_t IS740_transmit64(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
 
 	uint32_t status;
 	if(hIS740->state != IS740_STATE_READY)
@@ -315,7 +315,7 @@ IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t 
  * @param		size Size of array
  * @retval 		IS740 state
  */
-IS740state_t IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
+IS740state_t IS740_receive64(IS740handle_t *hIS740, uint8_t *buff, uint8_t size){
 
 	uint32_t status;
 	if(hIS740->state != IS740_STATE_READY)

@@ -109,9 +109,9 @@ int main(void)
 	uint8_t rxbuf[64];
 
 	delayMs(10);
-	IS740_transmitStream(&bridge, string, sizeof(string));
+	IS740_transmit64(&bridge, string, sizeof(string));
 	delayMs(20);
-	IS740_receiveStream(&bridge, rxbuf, sizeof(string));
+	IS740_receive64(&bridge, rxbuf, sizeof(string));
 	printf("DATA: %s", rxbuf);
   /* USER CODE END 2 */
 

@@ -115,8 +115,8 @@ IS740state_t IS740_transmitByte(IS740handle_t *hIS740, uint8_t txByte);
 
 uint32_t IS740_receiveByte(IS740handle_t *hIS740);
 
-IS740state_t IS740_transmitStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
-IS740state_t IS740_receiveStream(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
+IS740state_t IS740_transmit64(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
+IS740state_t IS740_receive64(IS740handle_t *hIS740, uint8_t *buff, uint8_t size);
 
 IS740error_t IS740_writeByte(IS740handle_t *hIS740, uint8_t regAddr, uint8_t byte);
 uint32_t IS740_readByte(IS740handle_t *hIS740, uint8_t regAddr);
